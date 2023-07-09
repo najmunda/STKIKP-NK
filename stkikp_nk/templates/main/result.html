@@ -1,0 +1,63 @@
+{% extends 'main/main_base.html' %}
+
+{% block section_icon %}text_format{% endblock %}
+
+{% block section_title %}Hasil{% endblock %}
+
+{% block section_nav %}
+    <div class="valign-wrapper">
+        <a class="btn waves-effect waves-light green darken-4" href="{{ url_for('main.input') }}">Input
+            <i class="material-icons left">arrow_back</i>
+        </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="col s12">
+
+        <h4>Anamnesa awal</h4>
+        <p>{{ input }}</p>
+
+        <h4>Preprocess</h4>
+        <p>{{ preprocessed_string }}</p>
+
+        <h4>Koreksi Kata</h4>
+        <p>{{ corrected_string }}</p>
+
+        <h4>Gejala - Gejala</h4>
+        <div class="valign-wrapper">
+            <a class="btn waves-effect waves-light green darken-4" href="{{ url_for('main.result') }}">Masukkan Kasus
+                <i class="material-icons left">post_add</i>
+            </a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Gejala</th>
+                    <th>Prediksi Kode</th>
+                    <th>Nilai Probabilitas</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for symptom in symptoms_and_codes %}
+                <tr>
+                    <td>{{symptom[0]}}</td>
+                    <td>{{symptom[1][0]}}</td>
+                    <td>{{symptom[1][1]}}</td>
+                    <td>{{symptom[1][2]}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4>Prediksi Kode ICD X</h4>
+        <div class="valign-wrapper">
+            <a class="btn waves-effect waves-light green darken-4" href="{{ url_for('main.instruction') }}">Tata Laksana
+                <i class="material-icons left">article</i>
+            </a>
+        </div>
+        <p>Sistem memprediksi kasus yang anda input memiliki kode ICD X <strong>{{ cbr_result }}</strong></p>
+        
+    </div>
+{% endblock %}

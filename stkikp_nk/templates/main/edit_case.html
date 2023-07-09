@@ -1,0 +1,197 @@
+{% extends 'main/main_base.html' %}
+
+{% block section_icon %}edit{% endblock %}
+
+{% block section_title %}Edit Kasus{% endblock %}
+
+{% block content %}
+    <form method="post">
+
+        <!-- Case ID Input -->
+        <div class="row">
+            <div class="input-field col s12">
+                <input type="number" name="case_id" id="case_id" value="{{case[0]}}" disabled>
+                <label for="case_id">ID Kasus</label>
+            </div>
+        </div>
+
+        <!-- ICD X Code Select -->
+        <div class="row">
+            <div class="input-field col s12">
+                <select class="browser-default" name="icd_x" id="icd_x">
+                    <option value="" disabled></option>
+                    {% for icd_x_code in icd_x_list %}
+                        <option 
+                            value="{{icd_x_code}}"
+                            {% if case[3] == icd_x_code[0] %}
+                                selected
+                            {% endif %}  
+                        >{{icd_x_code[0]}}</option>
+                    {% endfor %}
+                </select>
+                <label for="icd_x" class="active">Kode ICD X</label>
+            </div>
+        </div>
+
+        <!-- Symptom Input -->
+        <div id="symptoms-form">
+        {% for symptom in symptoms %}
+            <div id="symptom-row-{{loop.index}}" class="symptom-row row valign-wrapper">
+                <div class="input-field col s4">
+                    <input type="text" name="symptom_raw" id="symptom_raw_{{loop.index}}" value="{{symptom[2]}}">
+                    <label for="symptom_raw_{{loop.index}}" class="active">Gejala {{loop.index}}</label>
+                </div>
+                <div class="input-field col s4">
+                    <input type="text" name="symptom_normalized" id="symptom_normalized_{{loop.index}}" value="{{symptom[3]}}">
+                    <label for="symptom_normalized_{{loop.index}}" class="active">Gejala Ternormalisasi {{loop.index}}</label>
+                </div>
+                <div class="input-field col s2">
+                    <select name="symptom_code" class="browser-default" id="symptom_code_{{loop.index}}">
+                        <option value="" disabled></option>
+                        {% for symptom_option in symptom_list %}
+                            <option 
+                                value="{{symptom_option[1]}}"
+                                {% if symptom[5] == symptom_option[1] %}
+                                    selected
+                                {% endif %}  
+                            >{{symptom_option[0] ~ ' (' ~ symptom_option[1] ~ ')'}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="symptom_code_{{loop.index}}" class="active">Kode Gejala {{loop.index}}</label>
+                </div>
+                <div class="input-field col s1">
+                    <select name="symptom_negativity" class="browser-default" id="symptom_negativity_{{loop.index}}">
+                        <option value="" disabled></option>
+                        <option 
+                            value="0"
+                            {% if symptom[4] == 0 %}
+                                selected
+                            {% endif %}  
+                        >+</option>
+                        <option 
+                            value="1"
+                            {% if symptom[4] == 1 %}
+                                selected
+                            {% endif %}  
+                        >-</option>
+                    </select>
+                    <label for="symptom_negativity_{{loop.index}}" class="active">Negasi {{loop.index}}</label>
+                </div>
+                <div class="input-field col s1">
+                    <a id="delete_symptom_{{loop.index}}" class="btn waves-effect waves-light red darken-4">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+
+        <div class="row valign-wrapper">
+            <div class="col s12 input-field center-align">
+                <a id="add_symptom_btn" class="btn-large waves-effect waves-light green darken-4">Tambah Gejala
+                    <i class="material-icons right">add</i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Confirm and Delete Button -->
+        <div class="row">
+            <div class="input-field center-align">
+                <button class="btn waves-effect waves-light green darken-4" type="submit" name="action">Ubah Kasus
+                    <i class="material-icons right">save_as</i>
+                </button>
+                <a class="btn waves-effect waves-light red darken-4 modal-trigger" href="{{ url_for('main.delete_case', case_id=case[0]) }}">Hapus Kasus
+                    <i class="material-icons right">delete</i>
+                </a>
+            </div>
+        </div>
+        
+    </form>
+
+    <script type="text/javascript">
+        // Script for deleting symptom asyncronously
+        function replace_symptom_row_id(symptom_row, old_symptom_number, new_symptom_number) {
+            symptom_row.id = symptom_row.id.replace(old_symptom_number, new_symptom_number);
+            symptom_row.querySelectorAll('input').forEach(input => {
+                input.id = input.id.replace(old_symptom_number, new_symptom_number);
+            });
+            symptom_row.querySelectorAll('select').forEach(select => {
+                select.id = select.id.replace(old_symptom_number, new_symptom_number);
+            });
+            symptom_row.querySelectorAll('label').forEach(label => {
+                label.innerHTML = label.innerHTML.replace(old_symptom_number, new_symptom_number);
+                label.htmlFor = label.htmlFor.replace(old_symptom_number, new_symptom_number);
+            });
+            symptom_row.querySelectorAll('a').forEach(a => {
+                a.id = a.id.replace(old_symptom_number, new_symptom_number);
+            });
+        }
+
+        function sort_symptom_number() {
+            document.getElementById('symptoms-form').querySelectorAll('.symptom-row').forEach((symptom_row, index) => {
+                let old_symptom_number = Number(symptom_row.id.substring(12));
+                let new_symptom_number = index;
+                replace_symptom_row_id(symptom_row, old_symptom_number, new_symptom_number);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('symptoms-form').querySelectorAll('a').forEach(a => {
+                a.onclick = () => {
+                    let symptom_number = a.id.substring(15);
+                    const element = document.getElementById(`symptom-row-${symptom_number}`);
+                    element.remove();
+                    M.toast({html: `Gejala ${symptom_number} telah dihapus.`});
+                    sort_symptom_number();
+                };
+            });
+        });
+    </script>
+
+    <script>
+        // Script for adding symptom asyncronously
+        document.addEventListener('DOMContentLoaded', () => {
+
+            //Function to make symptom row template
+            function reset_symptom_row_template (symptom_row) {
+                symptom_row.querySelectorAll('input').forEach(input => {
+                    input.removeAttribute('value')
+                });
+                symptom_row.querySelectorAll('option').forEach(option => {
+                    if (option.value == "") {
+                        option.setAttribute('selected', 'selected');
+                    } else {
+                        option.removeAttribute('selected');
+                    }
+                });
+                symptom_row.querySelectorAll('a').forEach(a => {
+                    a.onclick = () => {
+                        let symptom_number = a.id.substring(15);
+                        const element = document.getElementById(`symptom-row-${symptom_number}`);
+                        element.remove();
+                        M.toast({html: `Gejala ${symptom_number} telah dihapus.`});
+                        sort_symptom_number();
+                    };
+                });
+            }
+
+            // Copy and hide symptom row template
+            let symptom_row_template = document.getElementById(`symptoms-form`).lastElementChild.cloneNode(true);
+            let old_symptom_number = Number(symptom_row_template.id.substring(12));
+            replace_symptom_row_id(symptom_row_template, old_symptom_number, 0);
+            reset_symptom_row_template(symptom_row_template);
+            symptom_row_template.style.display = 'none';
+            document.getElementById(`symptoms-form`).insertBefore(symptom_row_template, document.getElementById(`symptoms-form`).firstChild);
+
+            // Add function to Add Button
+            add_button = document.getElementById('add_symptom_btn').onclick = () => {
+                let symptom_row = symptom_row_template.cloneNode(true);
+                let new_symptom_number = document.getElementById(`symptoms-form`).childElementCount;
+                replace_symptom_row_id(symptom_row, 0, new_symptom_number);
+                reset_symptom_row_template(symptom_row);
+                symptom_row.style.display = 'block';
+                document.getElementById(`symptoms-form`).appendChild(symptom_row);
+            };
+        });
+    </script>
+{% endblock %}

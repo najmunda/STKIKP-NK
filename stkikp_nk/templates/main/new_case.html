@@ -1,0 +1,209 @@
+{% extends 'main/main_base.html' %}
+
+{% block section_icon %}playlist_add{% endblock %}
+
+{% block section_title %}Tambah Kasus Baru{% endblock %}
+
+{% block content %}
+    <form method="post" class="col s12">
+
+        <!-- ICD X Code Select -->
+        <div class="input-field">
+            <select name="icd_x" id="icd_x" class="browser-default" required>
+                <option value="" disabled selected>Pilih Kode ICD X</option>
+                {% for icd_x_code in icd_x_list %}
+                <option 
+                    value="{{icd_x_code[0]}}"
+                    {% if icd_x == icd_x_code[0] %}
+                        selected
+                    {% endif %}
+                >{{icd_x_code[0]}}</option>
+                {% endfor %}
+            </select>
+            <label for="icd_x" class="active">Kode ICD X</label>
+        </div>
+
+        <!-- Symptom Input -->
+        <div id="symptoms-form">
+            <!-- Symptom Input Template -->
+            <div id="symptom-row-0" class="symptom-row row valign-wrapper" style="display: none;">
+                <div class="input-field col s4">
+                    <input type="text" name="symptom_raw" id="symptom_raw_0" value="">
+                    <label for="symptom_raw_0" class="active">Gejala 0</label>
+                </div>
+                <div class="input-field col s4">
+                    <input type="text" name="symptom_normalized" id="symptom_normalized_0" value="">
+                    <label for="symptom_normalized_0" class="active">Gejala Ternormalisasi 0</label>
+                </div>
+                <div class="input-field col s2">
+                    <select name="symptom_code" class="browser-default" id="symptom_code_0">
+                        <option value="" selected></option>
+                        {% for symptom_option in symptom_list %}
+                            <option 
+                                value="{{symptom_option[1]}}"
+                            >{{symptom_option[0] ~ ' (' ~ symptom_option[1] ~ ')'}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="symptom_code_0" class="active">Kode Gejala 0</label>
+                </div>
+                <div class="input-field col s1">
+                    <select name="symptom_negativity" class="browser-default" id="symptom_negativity_0">
+                        <option value="" selected></option>
+                        <option value="0">+</option>
+                        <option value="1">-</option>
+                    </select>
+                    <label for="symptom_negativity_0" class="active">Negasi 0</label>
+                </div>
+                <div class="input-field col s1">
+                    <a id="delete_symptom_0" class="btn waves-effect waves-light red darken-4">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </div>
+            </div>
+            <!-- Existing Symptom Input -->
+            {% if symptoms %}
+            {% for raw, normalized, code, negativity in symptoms %}
+            <div id="symptom-row-{{loop.index}}" class="symptom-row row valign-wrapper">
+                <div class="input-field col s4">
+                    <input type="text" name="symptom_raw" id="symptom_raw_{{loop.index}}" value="{{raw}}" required>
+                    <label for="symptom_raw_{{loop.index}}" class="active">Gejala {{loop.index}}</label>
+                </div>
+                <div class="input-field col s4">
+                    <input type="text" name="symptom_normalized" id="symptom_normalized_{{loop.index}}" value="{{normalized}}" required>
+                    <label for="symptom_normalized_{{loop.index}}" class="active">Gejala Ternormalisasi {{loop.index}}</label>
+                </div>
+                <div class="input-field col s2">
+                    <select name="symptom_code" class="browser-default" id="symptom_code_{{loop.index}}" required>
+                        <option 
+                            value=""
+                            {% if code == "" %}
+                                selected
+                            {% endif %}></option>
+                        {% for symptom_option in symptom_list %}
+                            <option 
+                                value="{{symptom_option[1]}}"
+                                {% if code == symptom_option[1] %}
+                                    selected
+                                {% endif %}  
+                            >{{symptom_option[0] ~ ' (' ~ symptom_option[1] ~ ')'}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="symptom_code_{{loop.index}}" class="active">Kode Gejala {{loop.index}}</label>
+                </div>
+                <div class="input-field col s1">
+                    <select name="symptom_negativity" class="browser-default" id="symptom_negativity_{{loop.index}}" required>
+                        <option 
+                            value=""
+                            {% if negativity == "" %}
+                                selected
+                            {% endif %}></option>
+                        <option 
+                            value="0"
+                            {% if negativity == '0' %}
+                                selected
+                            {% endif %}  
+                        >+</option>
+                        <option 
+                            value="1"
+                            {% if negativity == '1' %}
+                                selected
+                            {% endif %}  
+                        >-</option>
+                    </select>
+                    <label for="symptom_negativity_{{loop.index}}" class="active">Negasi {{loop.index}}</label>
+                </div>
+                <div class="input-field col s1">
+                    <a id="delete_symptom_{{loop.index}}" class="btn waves-effect waves-light red darken-4">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Add Symptom Button -->
+        <div class="row valign-wrapper">
+            <div class="col s12 input-field center-align">
+                <a id="add_symptom_btn" class="btn-large waves-effect waves-light green darken-4">Tambah Gejala
+                    <i class="material-icons right">add</i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Confirm and Delete Button -->
+        <div class="row">
+            <div class="input-field center-align">
+                <button id="submit-button" class="btn waves-effect waves-light green darken-4" type="submit" name="action">Tambah Kasus
+                    <i class="material-icons right">save_as</i>
+                </button>
+            </div>
+        </div>
+        
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            function replace_symptom_row_id(symptom_row, old_symptom_number, new_symptom_number) {
+                symptom_row.id = symptom_row.id.replace(old_symptom_number, new_symptom_number);
+                symptom_row.querySelectorAll('input').forEach(input => {
+                    input.id = input.id.replace(old_symptom_number, new_symptom_number);
+                });
+                symptom_row.querySelectorAll('select').forEach(select => {
+                    select.id = select.id.replace(old_symptom_number, new_symptom_number);
+                });
+                symptom_row.querySelectorAll('label').forEach(label => {
+                    label.innerHTML = label.innerHTML.replace(old_symptom_number, new_symptom_number);
+                    label.htmlFor = label.htmlFor.replace(old_symptom_number, new_symptom_number);
+                });
+                symptom_row.querySelectorAll('a').forEach(a => {
+                    a.id = a.id.replace(old_symptom_number, new_symptom_number);
+                });
+            }
+
+            function sort_symptom_number() {
+                document.getElementById('symptoms-form').querySelectorAll('.symptom-row').forEach((symptom_row, index) => {
+                    let old_symptom_number = Number(symptom_row.id.substring(12));
+                    let new_symptom_number = index;
+                    replace_symptom_row_id(symptom_row, old_symptom_number, new_symptom_number);
+                });
+            }
+
+            // Add function to Add Button
+            add_button = document.getElementById('add_symptom_btn').onclick = () => {
+                let symptom_row = document.getElementById(`symptom-row-0`).cloneNode(true);
+                let new_symptom_number = document.getElementById(`symptoms-form`).childElementCount;
+                replace_symptom_row_id(symptom_row, 0, new_symptom_number);
+                symptom_row.querySelectorAll('a').forEach(a => {
+                    a.onclick = () => {
+                        let symptom_number = a.id.substring(15);
+                        const element = document.getElementById(`symptom-row-${symptom_number}`);
+                        element.remove();
+                        M.toast({html: `Gejala ${symptom_number} telah dihapus.`});
+                        sort_symptom_number();
+                    };
+                });
+                symptom_row.querySelectorAll('input').forEach(input => {
+                    input.setAttribute('required','required');
+                });
+                symptom_row.querySelectorAll('select').forEach(select => {
+                    select.setAttribute('required','required');
+                });
+                symptom_row.style.display = 'block';
+                document.getElementById(`symptoms-form`).appendChild(symptom_row);
+            };
+
+            document.getElementById('symptoms-form').querySelectorAll('a').forEach(a => {
+                a.onclick = () => {
+                    let symptom_number = a.id.substring(15);
+                    const element = document.getElementById(`symptom-row-${symptom_number}`);
+                    element.remove();
+                    M.toast({html: `Gejala ${symptom_number} telah dihapus.`});
+                    sort_symptom_number();
+                };
+            });
+
+        });
+    </script>
+{% endblock %}

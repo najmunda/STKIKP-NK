@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block section_title %}{% endblock %} | STKIKP-NK</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/app_icon_color.png') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+  </head>
+
+  <body>
+    
+    <!-- Side Navigation -->
+    <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper green darken-4">
+          <div style="height: 100%; padding: 0 2%; display: flex; justify-content: space-between; align-items: center;">
+            <img style="height: 65%;" src="{{ url_for('static', filename='images/app_horizontal_white.png') }}">
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+              <li><a href="{{ url_for('main.input') }}"><i class="material-icons left">text_format</i>Model Temu Kembali</a></li>
+              <li><a href="{{ url_for('main.case_manager') }}"><i class="material-icons left">storage</i>Kasus Tersimpan</a></li>
+              <li><a href="{{ url_for('auth.edit_account') }}"><i class="material-icons left">manage_accounts</i>Akun</a></li>
+              <li><a href="{{ url_for('other.about') }}"><i class="material-icons left">info</i>Tentang Aplikasi</a></li>
+              <li><a href="{{ url_for('auth.logout') }}"><i class="material-icons left">logout</i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <!-- End of Navigation -->
+
+    <main>
+      <div class="container">
+        <div class="row valign-wrapper">
+          <!-- Section Title -->
+          <div class="col s8">
+            <h3 class="valign-wrapper">
+              <i class="material-icons medium left">{% block section_icon %}{% endblock %}</i>
+              {{ self.section_title() }}
+            </h3>
+          </div>
+          <!-- End of Section Title -->
+          <!-- Navigation -->
+          <div class="col s4">
+            <h4 class="valign-wrapper">
+              {% block section_nav %}{% endblock %}
+            </h4>
+          </div>
+        </div>
+        <!-- End of Navigation -->
+        <!-- Flash Error Card -->
+        <div id="flash-message-div">
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+                <div id="flash-message-{{loop.index}}" class="col s12">
+                  <div class="card-panel teal">
+                    <span class="white-text">{{message}} <a id="close-flash-message-{{loop.index}}" class="white-text" style="cursor: pointer;"><i class="material-icons right">close</i></a></span>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+        </div>
+        <!-- End of Flash Error -->
+        <div class="row">
+          {% block content %}{% endblock %}
+        </div>
+      </div>    
+    </main>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+    <script type="text/javascript">
+      // Script for deleting cases asyncronously
+      document.addEventListener('DOMContentLoaded', () => {
+          document.getElementById('flash-message-div').querySelectorAll('a').forEach(a => {
+              a.onclick = () => {
+                  let message_index = a.id.substring(20);
+                  const element = document.getElementById(`flash-message-${message_index}`);
+                  element.remove();
+              };
+          });
+      });
+    </script>
+  </body>
+</html>

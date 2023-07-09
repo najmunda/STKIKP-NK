@@ -1,0 +1,37 @@
+{% extends 'auth/auth_base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block auth_form %}
+    <form method="post" class="col s12">
+        <p class="center-align">Sudah memiliki akun? Silahkan <a href="{{ url_for('auth.login') }}">Login</a></p>
+
+        <div class="input-field">
+            <input type="email" name="email" id="email" class="validate" required>
+            <label for="email">Email</label>
+        </div>
+
+        <div class="input-field">
+            <input type="password" name="password" id="password" class="validate" required>
+            <label for="password">Kata Sandi</label>
+        </div>
+
+        <div class="row">
+            <div class="input-field col s8">
+                <input name="fullname" id="fullname" class="validate" required>
+                <label for="fullname">Nama Lengkap</label>
+            </div>
+            <div class="input-field col s4">
+                <input name="nickname" id="nickname" class="validate" required>
+                <label for="nickname">Nama Panggil</label>
+            </div>
+        </div>
+
+        <div class="input-field center-align">
+            <button class="btn waves-effect waves-light green darken-4" type="submit" name="action">Register
+                <i class="material-icons right">person_add</i>
+            </button>
+        </div>
+        
+    </form>
+{% endblock %}

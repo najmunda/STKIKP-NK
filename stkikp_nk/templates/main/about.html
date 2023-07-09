@@ -1,0 +1,20 @@
+{% extends 'main/main_base.html' %}
+
+{% block section_icon %}info{% endblock %}
+
+{% block section_dir %}
+    {% block section_title %}Tentang Aplikasi{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class="col s12">
+
+        <img src="{{ url_for('static', filename='images/app_horizontal_green.png') }}" class="responsive-img">
+        <p style="text-align: justify;">Aplikasi STKIKP-NK (memiliki kepanjangan "Sistem Temu Kembali Informasi Kasus Penyakit - Nyeri Kepala") merupakan aplikasi yang digunakan untuk memproses anamnesa, mengkodekan gejala, memprediksi jenis penyakit, dan menampilkan tata laksana untuk penyakit Nyeri Kepala. Aplikasi dikembangkan dengan harapan mempermudah sebuah fasilitas kesehatan untuk digitalisasi, dan tenaga kesehatan dalam melakukan input, dan mendiagnosis penyakit. Pengembangan aplikasi didukung oleh Lembaga Penelitian dan Pengabdian kepada Masyarakat (LPPM) UIN Sunan Kalijaga Yogyakarta.</p>
+        <h5>Versi Perdana</h5>
+        <p style="text-align: justify;">Pada versi perdana, aplikasi didasarkan pada penelitian berjudul "Model Temu Kembali Kasus Nyeri Kepala Menggunakan Pendekatan Natural Language Processing". Penelitian ini mengkodekan 2 jenis penyakit nyeri kepala, yaitu Cluster Headache (dengan kode ICD X G44.0) dan Tension-Type Headache (dengan kode ICD X G44.2). Selain itu, penelitian ini mengklasifikasi gejala menjadi 51 gejala berdasarkan kategori. Pada penelitian ini, dilakukan proses Natural Language Processing (NLP) yang terdiri dari pemrosesan tanda baca, koreksi kata, vektorisasi dan klasifikasi gejala, sehingga merubah anamnesa yang terdiri dari beberapa gejala, diubah menjadi baris kode-kode gejala. Kode-kode gejala tersebut kemudian divektorisasi dan diproses dengan mencari vektor kasus terdekat yang sudah disimpan sebelumnya (Case Based Reasoning).</p>
+        <p style="text-align: justify;">Penelitian tersebut ditulis dengan bahasa Python, dan memanfaatkan Kode yang ditulis oleh <a href="http://norvig.com/spell-correct.html">Norvig</a> (koreksi kata), framework <a href="https://scikit-learn.org/stable/">scikit-learn</a> (Pengkodean Gejala, dan Case Based Reasoning), <a href="https://www.numpy.org">Numpy</a>, dan <a href="https://pandas.pydata.org">Pandas</a> (Manajemen Data). Aplikasi berbasis web pada versi perdana dikembangkan dengan framework <a href="https://flask.palletsprojects.com/">Flask</a>, <a href="https://materializecss.com/">Materiallize.css</a>, dan <a href="https://www.sqlite.org">SQLite</a>.</p>
+
+        
+    </div>
+{% endblock %}

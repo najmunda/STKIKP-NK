@@ -1,0 +1,46 @@
+{% extends 'main/main_base.html' %}
+
+{% block section_icon %}manage_accounts{% endblock %}
+
+{% block section_title %}Akun{% endblock %}
+
+{% block content %}
+    <form method="post" class="col s12">
+
+        <div class="input-field">
+            <input type="email" name="email" id="email" class="validate" value="{{email}}" required>
+            <label for="email">Email</label>
+        </div>
+
+        <div class="input-field">
+            <input name="fullname" id="fullname" class="validate" value="{{fullname}}" required>
+            <label class="active" for="fullname">Nama Lengkap</label>
+        </div>
+        
+        <div class="input-field">
+            <input name="nickname" id="nickname" class="validate" value="{{nickname}}" required>
+            <label class="active" for="nickname">Nama Panggil</label>
+        </div>
+
+        <div class="input-field">
+            <input type="password" name="new_password" id="new_password" class="validate">
+            <label for="new_password">Kata Sandi Baru</label>
+        </div>
+
+        <div class="input-field">
+            <input type="password" name="old_password" id="old_password" class="validate" required>
+            <label for="old_password">Kata Sandi Lama</label>
+            <span class="helper-text">Masukkan kata sandi untuk menyimpan perubahan.</span>
+        </div>
+
+        <div class="input-field center-align">
+            <button class="btn waves-effect waves-light green darken-4" type="submit" name="action">Ubah
+                <i class="material-icons right">manage_accounts</i>
+            </button>
+            <a class="btn waves-effect waves-light red darken-4 modal-trigger" href="{{ url_for('auth.delete_account') }}">Hapus Akun
+                <i class="material-icons right">person_remove</i>
+            </a>
+        </div>
+        
+    </form>
+{% endblock %}

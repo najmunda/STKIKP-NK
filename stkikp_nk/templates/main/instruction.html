@@ -1,0 +1,21 @@
+{% extends 'main/main_base.html' %}
+
+{% block section_icon %}text_format{% endblock %}
+
+{% block section_title %}Tata Laksana{% endblock %}
+
+{% block section_nav %}
+    <div class="valign-wrapper">
+        <a class="btn waves-effect waves-light green darken-4" href="{{ url_for('main.result') }}">Hasil
+            <i class="material-icons left">arrow_back</i>
+        </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="col s12">
+
+        <h4>Tata Laksana ({{ cbr_result }})</h4>
+        
+    </div>
+{% endblock %}

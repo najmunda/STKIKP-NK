@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %} - STKIKP-NK</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/app_icon_color.png') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}"  media="screen,projection"/>
+  </head>
+
+  <body>
+    <div style="display: flex;">
+      
+      <!--Side Cover-->
+      <div style="height: 100vh; width: 25%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: url({{ url_for('static', filename='images/login-bg-1.jpg') }}); background-size: cover;">
+        <img src="{{ url_for('static', filename='images/login-bg-2.png') }}" style="width: 75%;">
+        <img src="{{ url_for('static', filename='images/login-bg-3.png') }}" style="width: 75%;">
+      </div>
+      <!--End of Side Cover-->
+
+      <!--Form-->
+      <div style="height: 100vh; width: 75%; display: flex; justify-content: center; align-items: center;">
+        <div style="width: 75%; height: 75%;">
+          <div class="row valign-wrapper center-align">
+            <div class="col s7">
+              <a href=""></a>
+              <img src="{{ url_for('static', filename='images/app_horizontal_green.png') }}" class="responsive-img" title="Sistem Temu Kembali Informasi Kasus Penyakit - Nyeri Kepala">
+            </div>
+            <div class="offset-s1 col s4">
+              <p>Didukung oleh:</p>
+              <img src="{{ url_for('static', filename='images/uin_lppm_color.png') }}" class="responsive-img" width="75%">
+            </div>
+          </div>
+          <div class="row valign-wrapper" style="margin:0;">
+            {% block auth_form %}{% endblock %}
+          </div>
+        </div>
+      </div>
+      <!--End Of Form Container-->
+
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+  </body>
+</html>
