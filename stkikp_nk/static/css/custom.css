@@ -3,8 +3,8 @@
     padding: 12px;
 }
 
-/* edit_case.html */
-.symptoms-form>*:last-child {
+/* edit_case.html & new_case.html */
+.symptoms-form>div.row {
     margin-bottom: 0;
 }
 .browser-default {

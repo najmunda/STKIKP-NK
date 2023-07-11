@@ -3,9 +3,15 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from NLPCBR.db import get_db
+from stkikp_nk.db import get_db
 
 bp = Blueprint('auth', __name__)
+
+def delete_saved_input_threshold():
+    if session.get('input'):
+        session.pop('input')
+    if session.get('threshold'):
+        session.pop('threshold')
 
 def login_required(view):
     @functools.wraps(view)
@@ -111,6 +117,7 @@ def logout():
 @bp.route('/edit_account', methods=('GET', 'POST'))
 @login_required
 def edit_account():
+    delete_saved_input_threshold()
     db = get_db()
     user_id = session.get('user_id')
     user = db.execute(

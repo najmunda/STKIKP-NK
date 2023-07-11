@@ -37,21 +37,14 @@
       <div class="container">
         <div class="row valign-wrapper">
           <!-- Section Title -->
-          <div class="col s8">
+          <div class="col s12">
             <h3 class="valign-wrapper">
               <i class="material-icons medium left">{% block section_icon %}{% endblock %}</i>
               {{ self.section_title() }}
             </h3>
           </div>
           <!-- End of Section Title -->
-          <!-- Navigation -->
-          <div class="col s4">
-            <h4 class="valign-wrapper">
-              {% block section_nav %}{% endblock %}
-            </h4>
-          </div>
         </div>
-        <!-- End of Navigation -->
         <!-- Flash Error Card -->
         <div id="flash-message-div">
           {% with messages = get_flashed_messages() %}

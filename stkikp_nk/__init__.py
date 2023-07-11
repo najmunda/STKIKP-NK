@@ -27,18 +27,17 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    @app.route('/')
-    def no_path():
-        return redirect(url_for('main.input'))
-
     from . import auth
     app.register_blueprint(auth.bp)
 
     from . import main
     app.register_blueprint(main.bp)
-    #app.add_url_rule('/', endpoint='input')
 
     from . import other
     app.register_blueprint(other.bp)
+
+    @app.route('/')
+    def no_path():
+        return redirect(url_for('main.input'))
     
     return app
